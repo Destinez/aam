@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
+import setAuthToken from '../validation/authAuthToken'
 
 const axios = require('axios').default;
+
 
 
 function Login(){
@@ -36,24 +38,36 @@ function Login(){
       if (res.status === true && res.code === 200) {
 
         setMessage('Login Successful')
-        setErrorClass('text-success')
+        setErrorClass('text-center d-flex justify-content-center badge badge-success')
 
+        let token = res.data.token
+
+        //set JWT token to local
+        localStorage.setItem("token", token);
+ 
+        //set token to axios common header
+        setAuthToken(token);
+ 
+        //redirect user to home page
+        window.location.href = '/employees/manage-employees'
       }
 
-
-      if (res.status === false && res.code === 422) {
+      else if (res.status === false && res.code === 422) {
         
-        setErrorClass('text-success')
-        let err = res.errors
-
-        console.log(err)
-
-        if (err.email) {
-          // let emailMessage = err.email[0]
-
-          // setMessage('Email Required')
-          
+        if (res.errors.password) {
+          setMessage(res.errors.password[0])
         }
+
+        if (res.errors.email) {
+          setMessage(res.errors.email[0])
+        }
+
+        setErrorClass("text-center d-flex justify-content-center badge badge-danger")
+      }
+
+      else if (res.status === false && res.code === 423) {
+        setMessage("Email or Password is incorrect")
+        setErrorClass("text-center d-flex justify-content-center badge badge-danger")
       }
 
     })
@@ -73,7 +87,7 @@ function Login(){
                 <img src={require("../../assets/images/logo.png")} alt="logo" />
               </div>
               <h6 className="font-weight-light">Sign in to continue.</h6>
-              <span className={ errorClass }>{ message }</span>
+              <div className={ errorClass }>{ message }</div>
               <Form className="pt-3">
                 <Form.Group className="d-flex search-field">
                   <Form.Control type="email" placeholder="Enter Email" size="lg" className="h-auto" onChange={e => setEmail(e.target.value)} />

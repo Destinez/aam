@@ -36,7 +36,7 @@ class Sidebar extends Component {
       {path:'/apps', state: 'appsMenuOpen'},
       {path:'/basic-ui', state: 'basicUiMenuOpen'},
       {path:'/advanced-ui', state: 'advancedUiMenuOpen'},
-      {path:'/form-elements', state: 'formElementsMenuOpen'},
+      {path:'/employees', state: 'employeesMenuOpen'},
       {path:'/tables', state: 'tablesMenuOpen'},
       {path:'/maps', state: 'mapsMenuOpen'},
       {path:'/icons', state: 'iconsMenuOpen'},
@@ -93,14 +93,15 @@ class Sidebar extends Component {
             </Collapse>
           </li>
           <li className={ this.isPathActive('/form-elements') ? 'nav-item active' : 'nav-item' }>
-            <div className={ this.state.formElementsMenuOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('formElementsMenuOpen') } data-toggle="collapse">
-              <span className="menu-title"><Trans>Form Elements</Trans></span>
+            <div className={ this.state.employeesMenuOpen ? 'nav-link menu-expanded' : 'nav-link' } onClick={ () => this.toggleMenuState('employeesMenuOpen') } data-toggle="collapse">
+              <span className="menu-title"><Trans>Employees</Trans></span>
               <i className="menu-arrow"></i>
               <i className="mdi mdi-format-list-bulleted menu-icon"></i>
             </div>
-            <Collapse in={ this.state.formElementsMenuOpen }>
+            <Collapse in={ this.state.employeesMenuOpen }>
               <ul className="nav flex-column sub-menu">
-                <li className="nav-item"> <Link className={ this.isPathActive('/form-elements/basic-elements') ? 'nav-link active' : 'nav-link' } to="/form-elements/basic-elements"><Trans>Basic Elements</Trans></Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/employees/add-employee') ? 'nav-link active' : 'nav-link' } to="/employees/add-employee"><Trans>Add Employee</Trans></Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/employees/manage-employees') ? 'nav-link active' : 'nav-link' } to="/employees/manage-employees"><Trans>Manage Employees</Trans></Link></li>
               </ul>
             </Collapse>
           </li>

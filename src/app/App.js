@@ -56,7 +56,7 @@ class App extends Component {
     }
 
     window.scrollTo(0, 0);
-    const fullPageLayoutRoutes = ['/auth/login', '/auth/register', '/auth/register-custom', '/auth/forgot-password', '/auth/verification-success', '/auth/lockscreen', '/error-pages/error-404', '/error-pages/error-500', '/general-pages/landing-page'];
+    const fullPageLayoutRoutes = ['/auth/login', '/auth/register', '/auth/register-custom', '/auth/forgot-password', '/auth/reset-password', '/auth/lockscreen', '/error-pages/error-404', '/error-pages/error-500', '/general-pages/landing-page'];
 
     for ( let i = 0; i < fullPageLayoutRoutes.length; i++ ) {
       if (this.props.location.pathname === fullPageLayoutRoutes[i]) {

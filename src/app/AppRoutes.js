@@ -14,7 +14,11 @@ const Dropdowns = lazy(() => import('./basic-ui/Dropdowns'));
 const Typography = lazy(() => import('./basic-ui/Typography'));
 
 
-const BasicElements = lazy(() => import('./form-elements/BasicElements'));
+//Employee Pages
+const AddEmployee = lazy(() => import('./employees/add-employee'));
+const ManageEmployees = lazy(() => import('./employees/manage-employees'));
+
+
 
 const BasicTable = lazy(() => import('./tables/BasicTable'));
 
@@ -33,7 +37,9 @@ const Register = lazy(() => import('./auth/Register'));
 const RegisterCustom = lazy(() => import('./auth/RegisterCustom'));
 const ForgotPassword = lazy(() => import('./auth/ForgotPassword'));
 const ResetPassword = lazy(() => import('./auth/ResetPassword'));
-const VerificationSuccess = lazy(() => import('./auth/VerificationSuccess'));
+const ChangePassword = lazy(() => import('./auth/ChangePassword'));
+const VerificationPending = lazy(() => import('./auth/VerificationPending'));
+const Verification = lazy(() => import('./auth/Verification'));
 
 
 
@@ -56,7 +62,8 @@ class AppRoutes extends Component {
           <Route path="/basic-ui/typography" component={ Typography } />
 
 
-          <Route path="/form-Elements/basic-elements" component={ BasicElements } />
+          <Route path="/employees/add-employee" component={ AddEmployee } />
+          <Route path="/employees/manage-employees" component={ ManageEmployees } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 
@@ -73,8 +80,10 @@ class AppRoutes extends Component {
           </Route>
           <Route path="/auth/register-custom/:token" component={ RegisterCustom } exact />
           <Route path="/auth/forgot-password" component={ ForgotPassword } />
-          <Route path="/auth/reset-password" component={ ResetPassword } />
-          <Route path="/auth/verification-success" component={ VerificationSuccess } />
+          <Route path="/reset-password" component={ ResetPassword } />
+          <Route path="/auth/change-password" component={ ChangePassword } />
+          <Route path="/auth/verification-pending" component={ VerificationPending } />
+          <Route path="/verification" component={ Verification } />
 
           <Route path="/user-pages/lockscreen" component={ Lockscreen } />
 

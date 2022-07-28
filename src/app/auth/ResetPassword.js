@@ -5,27 +5,70 @@ const axios = require('axios').default;
 
 
 function ResetPassword() {
-
-
-  const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [errorClass, setErrorClass] = useState("");
 
+  let search = window.location.search;
+  let params = new URLSearchParams(search);
+  let token = params.get('token');
+
+  
   let handleChangePassword = (e) => {
     e.preventDefault()
-    
-    if (newPassword !== password ) {
-      setMessage("Passwords do not match")
-      setErrorClass("text-danger")
+  
+    let passwordData = {
+      password: password,
+      password_confirmation: confirmPassword,
+      reset_token: token
     }
 
-    else{
-      if (res.status === false && res.code === 422) {
-        
+    console.log(passwordData)
+
+    axios({
+      method: 'post',
+      url: `http://${process.env.REACT_APP_SERVER_URL}/api/reset-password?token=${token}`,
+      data: passwordData,
+      headers: {
+        'Content-Type': 'application/json',
       }
-    }
+    })
+    
+    .then(function (response) {
+      console.log(response.data)
+
+      let res = response.data
+
+      if (res.status === false && res.code === 422) {
+
+          if (res.errors.password) {
+            setMessage(res.errors.password[0])
+          }
+
+          if (res.errors.reset_token) {
+            setMessage(res.errors.reset_token[0])
+          }
+
+        setErrorClass("text-danger")
+      }
+      else if(res.status === true && res.code === 200){
+        setMessage(res.message)
+        setErrorClass('text-success')
+      }
+      else if(res.status === false && res.code === 423){
+        setMessage(res.message)
+        setErrorClass('text-danger')
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+      setMessage("Oops! An error occurred")
+        setErrorClass('text-danger')
+    })
+      
+      
+  
   }
 
     return (
@@ -38,16 +81,16 @@ function ResetPassword() {
                 <Form className="pt-3">
                   
                   <Form.Group className="d-flex search-field">
-                    <Form.Control type="password" placeholder="Enter Old Password" size="lg" className="h-auto" onChange={e => setOldPassword(e.target.value)} />
-                  </Form.Group>
-                  <Form.Group className="d-flex search-field">
                     <Form.Control type="password" placeholder="Enter New Password" size="lg" className="h-auto" onChange={e => setPassword(e.target.value)} />
                   </Form.Group>
                   <Form.Group className="d-flex search-field">
-                    <Form.Control type="password" placeholder="Confirm New Password" size="lg" className="h-auto" onChange={e => setNewPassword(e.target.value)} />
+                    <Form.Control type="password" placeholder="Confirm New Password" size="lg" className="h-auto" onChange={e => setConfirmPassword(e.target.value)} />
                   </Form.Group>
                   <div className="mt-3">
                     <button className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={handleChangePassword} >Change Password</button>
+                  </div>
+                  <div className="text-center mt-4 font-weight-light">
+                    Don't have an account? <Link to="/auth/register" className="text-primary">Create</Link>
                   </div>
                 </Form>
               </div>
