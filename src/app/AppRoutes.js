@@ -17,6 +17,9 @@ const Typography = lazy(() => import('./basic-ui/Typography'));
 //Employee Pages
 const AddEmployee = lazy(() => import('./employees/add-employee'));
 const ManageEmployees = lazy(() => import('./employees/manage-employees'));
+const EmployeeDetails = lazy(() => import('./employees/employee-details'));
+const UpdateEmployee = lazy(() => import('./employees/update-employee'));
+const InvitationLink = lazy(() => import('./employees/invitation-link'));
 
 
 
@@ -64,6 +67,9 @@ class AppRoutes extends Component {
 
           <Route path="/employees/add-employee" component={ AddEmployee } />
           <Route path="/employees/manage-employees" component={ ManageEmployees } />
+          <Route path="/employees/employee-details/:employeeId" component={ EmployeeDetails } />
+          <Route path="/employees/update-employee/:id" component={ UpdateEmployee } />
+          <Route path="/employees/invitation-link" component={ InvitationLink } />
 
           <Route path="/tables/basic-table" component={ BasicTable } />
 

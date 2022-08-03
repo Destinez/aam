@@ -102,6 +102,8 @@ class Sidebar extends Component {
               <ul className="nav flex-column sub-menu">
                 <li className="nav-item"> <Link className={ this.isPathActive('/employees/add-employee') ? 'nav-link active' : 'nav-link' } to="/employees/add-employee"><Trans>Add Employee</Trans></Link></li>
                 <li className="nav-item"> <Link className={ this.isPathActive('/employees/manage-employees') ? 'nav-link active' : 'nav-link' } to="/employees/manage-employees"><Trans>Manage Employees</Trans></Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/employees/employee-details') ? 'nav-link active' : 'nav-link' } to="/employees/employee-details"><Trans>Employee Details</Trans></Link></li>
+                <li className="nav-item"> <Link className={ this.isPathActive('/employees/invitation-link') ? 'nav-link active' : 'nav-link' } to="/employees/invitation-link"><Trans>Generate Invitational Link</Trans></Link></li>
               </ul>
             </Collapse>
           </li>

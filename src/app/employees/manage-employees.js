@@ -1,50 +1,119 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { ProgressBar } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import setAuthToken from '../validation/authAuthToken'
 const axios = require('axios').default;
 
 
 
 function ManageEmployees(){
-
+    const [employees, setEmployees] = useState([])
+    const [role, setRole] = useState("")
+    const [message, setMessage] = useState("");
+    const [errorClass, setErrorClass] = useState("");
+    
     useEffect(() => {
-        let token = localStorage.getItem("token");
-        setAuthToken(token);
-        
+        fetchEmployees()
     }, []);
 
-    let token = localStorage.getItem("token")
+    let handleView = (id, e) => {
+        e.preventDefault()
+        window.location.href = `/employees/employee-details/${id}`
+    }
+
+    let handleEdit = (id, e) => {
+        e.preventDefault()
+        window.location.href = `/employees/update-employee/${id}`
+    }
+
+    let handleDelete = (id, e) => {
+        e.preventDefault()
+    }
 
 
-    axios({
-        method: 'get',
-        url: `http://${process.env.REACT_APP_SERVER_URL}/api/employees`,
-        headers: {
-            'authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          
-        }
-      })
-        
-      .then(function (response) {
-        let res = response.data
-        console.log(response.data)
 
-        if (res.status === false && res.code === 424) {
-            window.location.href = '/auth/verification-pending'
-        }
+    let fetchEmployees = () => {
+        let token = localStorage.getItem("token");
+        setAuthToken(token);
 
-        else if (res.status === true && res.code === 200) {
+        axios({
+            method: 'get',
+            url: `http://${process.env.REACT_APP_SERVER_URL}/api/employees`,
+            headers: {
+                'authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+          })
             
+          .then(function (response) {
+            let res = response.data
+            if (res.status === false && res.code === 424) {
+                window.location.href = '/auth/verification-pending'
+            }
+    
+            else if (res.status === true && res.code === 200) {
+                setEmployees(res.data)
+            }
+          })
+    
+          .catch(function (error) {
+            console.log(error);
+          });
+    }
+
+
+
+    let handleRoleChange = (param) => {
+        let token = localStorage.getItem("token");
+
+        let data = {
+            user_id: param.user_id,
+            role: param.role,
         }
-        
-      })
 
-      .catch(function (error) {
-        console.log(error);
-      });
+        axios({
+            method: 'post',
+            url: `http://${process.env.REACT_APP_SERVER_URL}/api/assign-role`,
+            data: data,
+            headers: {
+                'authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+          })
+            
+          .then(function (response) {
+            let res = response.data
 
+            if (res.status === false && res.code === 423) {
+                setMessage(res.message)
+                setErrorClass('text-danger')
+            }
 
+            else if (res.status === false && res.code === 422) {
+                if (res.errors.user_id[0]) {
+                    setMessage(res.errors.user_id[0])
+                    setErrorClass('text-danger')
+                }
+                if (res.errors.role[0]) {
+                    setMessage(res.errors.role[0])
+                    setErrorClass('text-danger')
+                }
+            }
+            
+            else if (res[0].status === false && res[0].code === 403) {
+                setMessage(res[0].message)
+                setErrorClass('text-danger')
+            }
+            else if (res.status === true && res.code === 200) {
+                setMessage(res.message)
+                setErrorClass('text-success')
+            }
+          })
+
+          .catch(function (error) {
+            console.log(error);
+          })
+    }
         
     return (
         <div>
@@ -62,7 +131,15 @@ function ManageEmployees(){
             <div className="col-lg-12 grid-margin stretch-card">
                 <div className="card">
                 <div className="card-body">
-                    <h4 className="card-title">All Employers</h4>
+                    <h4 className="card-title">All Employees</h4>
+                    <div className='d-flex justify-content-center'>
+                    <div className='message-info'>
+                        <h6 className={ errorClass }>
+                        
+                        { message }
+                        </h6>
+                    </div>
+                </div>
                     <div className="table-responsive">
                     <table className="table table-hover">
                         <thead>
@@ -76,49 +153,49 @@ function ManageEmployees(){
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>2</td>
-                            <td>
-                                <div className="dropdown-item preview-item d-flex">
-                                    <div className="preview-thumbnail">
-                                        <img src={require("../../assets/images/faces/face4.jpg")} alt="user" className="profile-pic"/>
-                                    </div>
-                                    <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                        <p className="text-gray mb-0">
-                                            Obaro Destiny Udurie
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                            </td>
-                            <td>obarodestinez@digitalswitch.com</td>
-                            <td>08193837836</td>
-                            <td>
-                                <select className="form-control" id="exampleFormControlSelect2" >
-                                    <option className=''>Admin</option>
-                                    <option className=''>Receiver</option>
-                                    <option className=''>Sender</option>
-                                    <option className=''>Receiver & Sender</option>
-                                    <option className=''>ReadOnly</option>
-                                </select>
-                            </td>
-                            <td>
-                                <div className='action-icons d-flex justify-content-evenly'>
-                                    <div className='view-button'>
-                                        <i className="mdi mdi-eye text-warning"></i>
-                                    </div>
-                                    <div className='edit-button'>
-                                        <i className="mdi mdi-pen text-info"></i>
-                                    </div>
-                                    <div className='delete-button'>
-                                        <i className="mdi mdi-delete-outline text-danger"></i>
-                                    </div>
-                                    
-                                    
-                                </div>
-                                
-                            </td>
-                        </tr>
+                            {employees.map((employee) => {
+                                return(
+                                    <tr key={employee.user_id}>
+                                        <td className='text-warning'>{employee.employee_id}</td>
+                                        <td>
+                                            <div className="dropdown-item preview-item d-flex">
+                                                <div className="preview-thumbnail">
+                                                    <img src={employee.photo} alt="user" className="profile-pic"/>
+                                                </div>
+                                                <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                                    <p className="text-gray mb-0">
+                                                        {employee.name}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{employee.email}</td>
+                                        <td>{employee.phone_number}</td>
+                                        <td>
+                                        <select className="form-control" onChange={(e)=> handleRoleChange({user_id: employee.user_id, role:e.target.value})}id="exampleFormControlSelect2" value={employee.role}>
+                                                <option value="admin" className=''>Admin</option>
+                                                <option value="Receiver" className=''>receiver</option>
+                                                <option value="Sender" className=''>Sender</option>
+                                                <option value="receiver and sender" className=''>Receiver & Sender</option>
+                                                <option value="read only" className=''>Read Only</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div className='action-icons d-flex justify-content-evenly'>
+                                                <Link to="#" onClick={(e) => handleView(employee.user_id,e)} className='view-button'>
+                                                    <i className="mdi mdi-eye text-warning"></i>
+                                                </Link>
+                                                <Link to="#" onClick={(e) => handleEdit(employee.user_id,e)}  className='edit-button'>
+                                                    <i className="mdi mdi-pen text-info"></i>
+                                                </Link>
+                                                <Link to="#" onClick={(e) => handleDelete(employee.user_id,e)} className='delete-button'>
+                                                    <i className="mdi mdi-delete-outline text-danger"></i>
+                                                </Link>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                        })}
                         </tbody>
                     </table>
                     </div>

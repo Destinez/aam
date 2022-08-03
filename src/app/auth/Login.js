@@ -59,7 +59,7 @@ function Login(){
         }
 
         if (res.errors.email) {
-          setMessage(res.errors.email[0])
+          setMessage(res.errors.emaitl[0])
         }
 
         setErrorClass("text-center d-flex justify-content-center badge badge-danger")

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
+import { useParams } from 'react-router-dom'
 import setAuthToken from '../validation/authAuthToken'
 const axios = require('axios').default;
 
-function AddEmployee(){
+function UpdateEmployee(){
+
+  const { id } = useParams()
 
   const [lastName, setLastName] = useState("")
-  const [firstName, setfirstName] = useState("")
+  const [firstName, setFirstName] = useState("")
   const [middleName, setMiddleName] = useState("")
   const [email, setEmail] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
@@ -15,59 +18,66 @@ function AddEmployee(){
   const [role, setRole] = useState("")
   const [maritalStatus, setMaritalStatus] = useState("")
   const [employeeId, setEmployeeId] = useState("")
+  const [employeeDetails, setEmployeeDetails] = useState([])
   const [error, setError] = useState("")
   const [errorClass, setErrorClass] = useState("")
+
 
   useEffect(() => {
     let token = localStorage.getItem("token");
     setAuthToken(token);
 
+    fetchEmployeeDetails(token)
+
   }, []);
 
-  let handleForm = () => {
-    if(firstName === "") {
-      setError("First Name field is required")
-      setErrorClass("text-danger")
-    }
-    else if (lastName === "") {
-      setError("Last Name field is required")
-      setErrorClass("text-danger")
-    }
-    else if(phoneNumber === "") {
-      setError("Phone Number field is required")
-      setErrorClass("text-danger")
-    }
-    else if(email === "") {
-      setError("Email field is required")
-      setErrorClass("text-danger")
-    }
-    else if(gender === "") {
-      setError("Gender field is required")
-      setErrorClass("text-danger")
-    }
-    else if(maritalStatus === "") {
-      setError("Marital Status field is required")
-      setErrorClass("text-danger")
-    }
-    else if(role === "") {
-      setError("Role field is required") 
-      setErrorClass("text-danger")
-    }
-    else if(employeeId === "") {
-      setError("Employer ID field is required")
-      setErrorClass("text-danger")
-    }
-    else{
-      return
-    } 
+
+  let fetchEmployeeDetails = (token) => {
+    axios({
+      method: 'get',
+      url: `http://${process.env.REACT_APP_SERVER_URL}/api/employee-details/${id}`,
+      headers: {
+          'authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
+    })
+      
+    .then(function (response) {
+      let res = response.data
+      
+      if ( res.status === false && res.code === 423) {
+          setError(res.message)
+          setErrorClass('text-danger')
+      }
+      else if (res.status === true && res.code === 200) {
+          let employee = res.data
+          setLastName(employee.last_name)
+          setFirstName(employee.first_name)
+          setMiddleName(employee.middle_name)
+          setGender(employee.gender)
+          setRole(employee.role)
+          setEmployeeId(employee.employee_id)
+          setPhoneNumber(employee.phone_number)
+          setProfilePicture(employee.photo)
+          setEmail(employee.email)
+          setMaritalStatus(employee.marital_status)
+      }
+    })
+
+    .catch(function (error) {
+      console.log(error);
+    })
   }
+  
 
-  let handleAdd = (e) => {
 
+  let handleUpdate = (e) => {
     let token = localStorage.getItem("token");
     setAuthToken(token);
 
-    let newEmployee = {
+    e.preventDefault()
+
+    let employee = {
       first_name: firstName,
       last_name: lastName,
       phone_number: phoneNumber,
@@ -77,17 +87,15 @@ function AddEmployee(){
       role: role,
       employee_id: employeeId,
       photo: "",
-      middle_name: middleName
+      middle_name: middleName,
+      user_id: id
     }
 
-    e.preventDefault()
-
-    handleForm()
 
     axios({
       method: 'post',
-      data: newEmployee,
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/create-employee`,
+      data: employee,
+      url: `http://${process.env.REACT_APP_SERVER_URL}/api/update-employee`,
       headers: {
           'authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -95,7 +103,6 @@ function AddEmployee(){
     })
       
     .then(function (response) {
-
       let res = response.data
       console.log(res)
 
@@ -104,11 +111,11 @@ function AddEmployee(){
       }
 
       else if (res.status === true && res.code === 200) {
-          setError(res.data)
+          setError(res.message)
           setErrorClass("text-success")
       }
       else if (res.status === false && res.code === 403) {
-          setError(res.data)
+          setError(res.message)
           setErrorClass("text-success")
       }
 
@@ -158,19 +165,22 @@ function AddEmployee(){
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item"><a href="" onClick={event => event.preventDefault()}>Employees</a></li>
-              <li className="breadcrumb-item active" aria-current="page">Add Employee</li>
+              <li className="breadcrumb-item active" aria-current="page">Update Employee</li>
             </ol>
           </nav>
         </div>
         <div className="row">   
-          <div className="col-md-11 grid-margin stretch-card mx-auto">
+          <div className="col-md-12 grid-margin stretch-card mx-auto">
             <div className="card">
               <div className="card-body">
-                <h4 className="card-title">Register Employee</h4>
+                <h4 className="card-title text-center">Update Employee Details</h4>
+                <div className='profile-picture d-flex justify-content-center'>
+                  <img src={ profilePicture } className="img-fluid"></img>
+                </div>
                 <div className='message-info'>
-                    <h6 className={ errorClass }>
-                      { error }
-                    </h6>
+                  <h6 className={ errorClass }>
+                    { error }
+                  </h6>
                 </div>
                 <Form.Group>
                   <label htmlFor="exampleFormControlSelect2">Profile Picture</label>
@@ -181,58 +191,62 @@ function AddEmployee(){
                 <Form.Group>
                 <label htmlFor="exampleFormControlSelect2">First Name</label>
                   <div className="input-group">
-                    <Form.Control type="text" className="form-control" placeholder="First Name" aria-label="FirstName" aria-describedby="basic-addon1" onChange={e => setfirstName(e.target.value)} />
+                    <Form.Control type="text" className="form-control" placeholder="First Name" aria-label="FirstName" aria-describedby="basic-addon1" value={firstName} onChange={e => setFirstName(e.target.value)} />
                   </div>
                 </Form.Group>
                 <Form.Group>
                 <label htmlFor="exampleFormControlSelect2">Last Name</label>
                   <div className="input-group">
-                    <Form.Control type="text" className="form-control" placeholder="Last Name" aria-label="LastName" aria-describedby="basic-addon1" onChange={e => setLastName(e.target.value)} />
+                    <Form.Control type="text" className="form-control" placeholder="Last Name" aria-label="LastName" aria-describedby="basic-addon1"  value={lastName} onChange={e => setLastName(e.target.value)} />
                   </div>
                 </Form.Group>
                 <Form.Group>
                 <label htmlFor="exampleFormControlSelect2">Middle Name</label>
                   <div className="input-group">
-                    <Form.Control type="text" className="form-control" placeholder="Middle Name" aria-label="MiddleName" aria-describedby="basic-addon1" onChange={e => setMiddleName(e.target.value)} />
+                    <Form.Control type="text" className="form-control" placeholder="Middle Name" aria-label="MiddleName" aria-describedby="basic-addon1"  value={middleName} onChange={e => setMiddleName(e.target.value)} />
                   </div>
                 </Form.Group>
                 <Form.Group>
-                <label htmlFor="exampleFormControlSelect2">Email</label>
+                  <label htmlFor="exampleFormControlSelect2">Email</label>
                   <div className="input-group">
-                    <Form.Control type="email" className="form-control" placeholder='Email' onChange={e => setEmail(e.target.value)} />
-                    {/* <div className="input-group-append">
-                      <span className="input-group-text" type="email" placeholder='Email'>@digitalswitch.com</span>
-                    </div> */}
+                    <Form.Control type="email" className="form-control"  value={email} placeholder='Email' onChange={e => setEmail(e.target.value)} />
+                  </div>
+                </Form.Group>
+                <Form.Group>
+                  <label htmlFor="exampleFormControlSelect2">Phone Number</label>
+                  <div className="input-group">
+                    <Form.Control type="text" className="form-control"  value={phoneNumber} placeholder='Phone Number' onChange={e => setPhoneNumber(e.target.value)} />
                   </div>
                 </Form.Group>
                 <Form.Group>
                   <label htmlFor="exampleFormControlSelect2">Employee ID.</label>
                   <div className="input-group">
-                    <Form.Control type="text" className="form-control" placeholder="Phone Number" aria-label="Phone" aria-describedby="basic-addon1" onChange={e => setPhoneNumber(e.target.value)} />
+                    <Form.Control type="text" className="form-control" placeholder="Employee ID." aria-label="EmployeeId" aria-describedby="basic-addon1"  value={employeeId} onChange={e => setEmployeeId(e.target.value)} />
                   </div>
                 </Form.Group>
                 <Form.Group>
                   <label htmlFor="exampleFormControlSelect2">Select Gender</label>
-                  <select className="form-control" id="exampleFormControlSelect2" onChange={e => setGender(e.target.value)} >
+                  <select className="form-control" id="exampleFormControlSelect2"  value={gender}  onChange={e => setGender(e.target.value)} >
                   <option>--Select Gender--</option>
                     <option>Male</option>
                     <option>Female</option>
+                    
                   </select>
                 </Form.Group>
                 <Form.Group>
                   <label htmlFor="exampleFormControlSelect2">Select Role</label>
-                  <select className="form-control" id="exampleFormControlSelect2" onChange={e => setRole(e.target.value)} >
+                  <select className="form-control" id="exampleFormControlSelect2"  value={role} onChange={e => setRole(e.target.value)} >
                     <option>--Select Role--</option>
                     <option value="admin" className=''>Admin</option>
-                    <option value="Receiver" className=''>receiver</option>
-                    <option value="Sender" className=''>Sender</option>
+                    <option value="receiver" className=''>Receiver</option>
+                    <option value="sender" className=''>Sender</option>
                     <option value="receiver and sender" className=''>Receiver & Sender</option>
                     <option value="read only" className=''>Read Only</option>
                   </select>
                 </Form.Group>
                 <Form.Group>
                   <label htmlFor="exampleFormControlSelect2">Select Marital Status</label>
-                  <select className="form-control" id="exampleFormControlSelect2" onChange={e => setMaritalStatus(e.target.value)} >
+                  <select  className="form-control" id="exampleFormControlSelect2"  value={maritalStatus} onChange={e => setMaritalStatus(e.target.value)} >
 
                     <option>--Select Marital Status--</option>
                     <option value="Single" className=''>Single</option>
@@ -242,13 +256,7 @@ function AddEmployee(){
                    
                   </select>
                 </Form.Group>
-                <Form.Group>
-                  <label htmlFor="exampleFormControlSelect2">Employee ID.</label>
-                  <div className="input-group">
-                    <Form.Control type="text" className="form-control" placeholder="Employer ID." aria-label="Employer ID" aria-describedby="basic-addon1" onChange={e => setEmployeeId(e.target.value)} />
-                  </div>
-                </Form.Group>
-                <button onClick={handleAdd} className="btn btn-primary">Add</button>
+                <button onClick={handleUpdate} className="btn btn-primary">Update</button>
               </div>
             </div>
           </div>
@@ -257,4 +265,4 @@ function AddEmployee(){
     )
   }
 
-export default AddEmployee
+export default UpdateEmployee
