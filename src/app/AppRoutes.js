@@ -80,26 +80,28 @@ class AppRoutes extends Component {
           <Route path="/charts/chart-js" component={ ChartJs } />
 
 
-          <Route path="/auth/login" component={ Login } />
-          <Route path="/auth/register/:token" component={ Register }  >
+          <Route path="/login" component={ Login } />
+          <Route path="/register/:token" component={ Register }  >
 
           </Route>
-          <Route path="/auth/register-custom/:token" component={ RegisterCustom } exact />
-          <Route path="/auth/forgot-password" component={ ForgotPassword } />
+          <Route path="/register-custom/:token" component={ RegisterCustom } exact />
+          <Route path="/forgot-password" component={ ForgotPassword } />
           <Route path="/reset-password" component={ ResetPassword } />
-          <Route path="/auth/change-password" component={ ChangePassword } />
-          <Route path="/auth/verification-pending" component={ VerificationPending } />
+          <Route path="/change-password" component={ ChangePassword } />
+          <Route path="/verification-pending" component={ VerificationPending } />
           <Route path="/verification" component={ Verification } />
+
+
 
           <Route path="/user-pages/lockscreen" component={ Lockscreen } />
 
-          <Route path="/error-pages/error-404" component={ Error404 } />
-          <Route path="/error-pages/error-500" component={ Error500 } />
+          <Route path="/error-404" component={ Error404 } />
+          <Route path="/error-500" component={ Error500 } />
 
           <Route path="/general-pages/blank-page" component={ BlankPage } />
 
 
-          <Redirect to="/dashboard" />
+          <Redirect to="/error-404" />
         </Switch>
       </Suspense>
     );

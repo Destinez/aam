@@ -1,17 +1,32 @@
 import React, { Component, useEffect, useState } from 'react'
 import { ProgressBar } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import MUIDataTable from "mui-datatables";
 import setAuthToken from '../validation/authAuthToken'
 const axios = require('axios').default;
 
 
 
 function ManageEmployees(){
+    const columns = ["ID", "Name", "Email", "Phone", "Role", "Action"];
+    let data = []
+    
+
+    const options = {
+    filterType: 'checkbox',
+    };
+
     const [employees, setEmployees] = useState([])
     const [role, setRole] = useState("")
     const [message, setMessage] = useState("");
     const [errorClass, setErrorClass] = useState("");
-    
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+        
     useEffect(() => {
         fetchEmployees()
     }, []);
@@ -53,6 +68,23 @@ function ManageEmployees(){
     
             else if (res.status === true && res.code === 200) {
                 setEmployees(res.data)
+                
+                res.data.forEach(index => {
+                    let row = [`${index.user_id}`, `${index.name}`, `${index.email}`, `${index.phone_number}`, `${index.role}`]
+                    data.push(row)
+
+                    
+                })
+
+                setEmployees(data)
+                
+
+                // const data = [
+                //     ["Joe James", "Test Corp", "Yonkers", "NY"],
+                //     ["John Walsh", "Test Corp", "Hartford", "CT"],
+                //     ["Bob Herm", "Test Corp", "Tampa", "FL"],
+                //     ["James Houston", "Test Corp", "Dallas", "TX"],
+                //     ];
             }
           })
     
@@ -100,8 +132,8 @@ function ManageEmployees(){
                 }
             }
             
-            else if (res[0].status === false && res[0].code === 403) {
-                setMessage(res[0].message)
+            else if (res.status === false && res.code === 403) {
+                setMessage(res.message)
                 setErrorClass('text-danger')
             }
             else if (res.status === true && res.code === 200) {
@@ -140,7 +172,7 @@ function ManageEmployees(){
                         </h6>
                     </div>
                 </div>
-                    <div className="table-responsive">
+                    {/* <div className="table-responsive">
                     <table className="table table-hover">
                         <thead>
                         <tr>
@@ -158,7 +190,7 @@ function ManageEmployees(){
                                     <tr key={employee.user_id}>
                                         <td className='text-warning'>{employee.employee_id}</td>
                                         <td>
-                                            <div className="dropdown-item preview-item d-flex">
+                                            <div className="dropdown-item preview-item d-flex p-0">
                                                 <div className="preview-thumbnail">
                                                     <img src={employee.photo} alt="user" className="profile-pic"/>
                                                 </div>
@@ -174,8 +206,8 @@ function ManageEmployees(){
                                         <td>
                                         <select className="form-control" onChange={(e)=> handleRoleChange({user_id: employee.user_id, role:e.target.value})}id="exampleFormControlSelect2" value={employee.role}>
                                                 <option value="admin" className=''>Admin</option>
-                                                <option value="Receiver" className=''>receiver</option>
-                                                <option value="Sender" className=''>Sender</option>
+                                                <option value="receiver" className=''>Receiver</option>
+                                                <option value="sender" className=''>Sender</option>
                                                 <option value="receiver and sender" className=''>Receiver & Sender</option>
                                                 <option value="read only" className=''>Read Only</option>
                                             </select>
@@ -188,7 +220,7 @@ function ManageEmployees(){
                                                 <Link to="#" onClick={(e) => handleEdit(employee.user_id,e)}  className='edit-button'>
                                                     <i className="mdi mdi-pen text-info"></i>
                                                 </Link>
-                                                <Link to="#" onClick={(e) => handleDelete(employee.user_id,e)} className='delete-button'>
+                                                <Link to="#" onClick={handleShow} className='delete-button'>
                                                     <i className="mdi mdi-delete-outline text-danger"></i>
                                                 </Link>
                                             </div>
@@ -198,12 +230,39 @@ function ManageEmployees(){
                         })}
                         </tbody>
                     </table>
-                    </div>
+                    </div> */}
+
+ <MUIDataTable
+  title={"Employee List"}
+  data={employees}
+  columns={columns}
+  options={options}
+/> 
                 </div>
                 </div>
             </div>
             
             </div>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <span className='text-danger'>
+                            This action cannot be reversed!
+                        </span> 
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Do you want to Delete user?
+                </Modal.Body>
+                <Modal.Footer>
+                <button className="btn btn-secondary" onClick={handleClose}>
+                    Cancel
+                </button>
+                <button className="btn btn-danger" onClick={handleClose}>
+                    Delete
+                </button>
+                </Modal.Footer>
+            </Modal>
             </div>
         
         )   
