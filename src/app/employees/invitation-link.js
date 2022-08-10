@@ -23,7 +23,7 @@ function InvitationLink(){
 
     const { name, value } = e.target;
     console.log(name, value)
-
+    
     setType(value)
     console.log(type)
 

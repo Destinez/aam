@@ -564,7 +564,7 @@ export class Dashboard extends Component {
                       type="text" 
                       className="form-control h-auto" 
                       placeholder="What do you need to do today?" 
-                      value={this.state.inputValue} 
+                      value={this.state.inputValue}
                       onChange={this.inputChangeHandler}
                       required />
                   <button type="submit" className="btn btn-gradient-primary font-weight-bold px-lg-4 px-3">Add</button>

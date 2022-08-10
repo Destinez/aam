@@ -6,8 +6,8 @@ import Navbar from './shared/Navbar';
 import Sidebar from './shared/Sidebar';
 import Footer from './shared/Footer';
 
-import { withTranslation } from "react-i18next";
-require('dotenv').config()
+// import { withTranslation } from "react-i18next";
+// require('dotenv').config()
 
 class App extends Component {
   state = {}
@@ -48,11 +48,11 @@ class App extends Component {
 
     if(this.props.location.pathname === '/layout/RtlLayout') {
       body.classList.add('rtl');
-      i18n.changeLanguage('ar');
+      // i18n.changeLanguage('ar');
     }
     else {
       body.classList.remove('rtl')
-      i18n.changeLanguage('en');
+      // i18n.changeLanguage('en');
     }
 
     window.scrollTo(0, 0);
@@ -76,4 +76,4 @@ class App extends Component {
   }
 }
 
-export default withTranslation() (withRouter(App));
+export default withRouter(App)
