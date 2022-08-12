@@ -56,10 +56,11 @@ class App extends Component {
     }
 
     window.scrollTo(0, 0);
-    const fullPageLayoutRoutes = ['/login', '/register/', '/register-custom/', 'forgot-password', 'reset-password', 'lockscreen', '/error-pages/error-404', '/error-pages/error-500', '/general-pages/landing-page'];
+    const fullPageLayoutRoutes = ['login', 'register', 'register-custom', 'forgot-password', 'reset-password', 'lockscreen', 'error-404', 'error-500', 'landing-page'];
 
     for ( let i = 0; i < fullPageLayoutRoutes.length; i++ ) {
-      if (this.props.location.pathname === fullPageLayoutRoutes[i]) {
+      if (this.props.location.pathname.split("/")[1] === fullPageLayoutRoutes[i]) {
+        
         this.setState({
           isFullPageLayout: true
         })

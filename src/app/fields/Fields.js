@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import MUIDataTable from "mui-datatables";
 import setAuthToken from '../validation/authAuthToken'
+import { Text, Boolean, RadioBox, RadioGroup, Date, Number, CheckBoxGroup, File, TextField } from './InputFields/InputFields'
 const axios = require('axios').default;
 
 
@@ -149,6 +150,8 @@ function Fields(){
                             </tr>
                         </tbody>
                     </table>
+                    <Text />
+                    <TextField />
                     </div>
 {/* 
  <MUIDataTable
@@ -163,7 +166,7 @@ function Fields(){
             
             </div>
 
-            
+
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -219,12 +222,16 @@ function Fields(){
                     </div>
                   </Form.Group>
 
-                  <Form.Group>
-                    <label htmlFor="exampleFormControlSelect2">Default Value</label>
-                    <div className="input-group">
-                      <Form.Control type="text" className="form-control" placeholder="Default Value" aria-label="DefaultValue" aria-describedby="basic-addon1" onChange={e => setDefaultValue(e.target.value)} />
-                    </div>
-                  </Form.Group>
+                  { fieldType === "text" && <Text /> }
+                  { fieldType === "boolean" && <Boolean /> }
+                  { fieldType === "number" && <Number /> }
+                  { fieldType === "date" && <Date /> }
+                  { fieldType === "textfield" && <TextField /> }
+                  { fieldType === "radio_group" && <RadioGroup /> }
+                  { fieldType === "radio_box" && <RadioBox /> }
+                  { fieldType === "file" && <File /> }
+                  { fieldType === "check_box_group" && <CheckBoxGroup /> }
+
                   <Form.Group>
                     <label htmlFor="exampleFormControlSelect2">Read Only</label>
                     <div className="input-group">

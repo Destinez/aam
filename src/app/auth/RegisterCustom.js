@@ -148,7 +148,7 @@ export class RegisterCustom extends Component {
                   </div>
 
                   <div className="form-group">
-                    <input type="text" className="form-control form-control-lg" id="exampleInputType" value="0" hidden name='type' />
+                    <input type="hidden" className="form-control form-control-lg" id="exampleInputType" value="0" name='type' />
                   </div>
 
                   <div className="mb-4">
