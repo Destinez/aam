@@ -1,113 +1,120 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, Component } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
-
+import setAuthToken from '../validation/authAuthToken'
 const axios = require('axios').default;
 
 
-export class RegisterCustom extends Component {
 
-  constructor(props){
+function RegisterCustom(){
 
-    super(props);
-    this.state = {first_name: '', last_name: '', email: '', password: '', confirm_password: '', token: '', type: '', message: ''};
-
-    // const { token } = useParams()
-    // this.setState({token: token})
-
-    this.handleFirstName = this.handleFirstName.bind(this);
-    this.handleLastName = this.handleLastName.bind(this);
-    this.handleEmail = this.handleEmail.bind(this);
-    this.handleType = this.handleType.bind(this);
-    // this.handleToken = this.handleToken.bind(this);
-    this.handlePassword = this.handlePassword.bind(this);
-    this.handleConfirmPassword = this.handleConfirmPassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleFirstName(e){
-    this.setState({
-      first_name: e.target.value
-    })
-  }
-  handleLastName(e){
-    this.setState({
-      last_name: e.target.value
-    })
-  }
-  handleEmail(e){
-    this.setState({
-      email: e.target.value
-    })
-  }
-  handlePassword(e){
-    this.setState({
-      password: e.target.value
-    })
-  }
-  handleConfirmPassword(e){
-    this.setState({
-      confirm_password: e.target.value
-    })
-  }
-  handleType(e){
-    this.setState({
-      type: e.target.value
-    })
-  }
-  // handleToken(e){
-  //   this.setState({
-  //     token: e.target.value
-  //   })
-  // }
-
-  handleMessage(msg){
-    this.setState({
-      message: msg
-    })
-  }
+  let { token } = useParams()
   
+  const [message, setMessage] = useState("");
+  const [errorClass, setErrorClass] = useState("");
 
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("")
+
+  const type = 0
+  // const [token, setToken] = useState("")
   
-  handleSubmit(e){
+  
+  const handleSignUp = (e) => {
+  
     e.preventDefault();
 
-    const user = JSON.stringify({
-      first_name: this.state.first_name,
-      last_name: this.state.last_name,
-      email: this.state.email,
-      password : this.state.password,
-      confirm_password : this.state.confirm_password,
+    const user = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      type: type,
+      token: token,
+      password: password,
+      password_confirmation: confirmPassword,
+    }
+
+    console.log(user)
+
+    axios({
+      method: 'post',
+      url: `${process.env.REACT_APP_SERVER_URL}/api/register`,
+      data: user,
+      headers: {
+        'Content-Type': 'application/json',
+      }
     })
 
-    if (user.password !== user.confirm_password) {
+    .then(function (response) {
+      console.log(response.data);
+      let res = response.data
 
-      let msg = "Password doesn't match"
-      this.handleMessage(msg)
-    }
+      if (res.status === true && res.code === 200) {
+        setMessage(res.message)
 
-    else{
-      axios({
-        method: 'post',
-        url: '/api/register',
-        data: user,
-        headers: {
-          'Content-Type': 'application/json',
+        let token = res.data.token
+        setErrorClass('text-center d-flex justify-content-center badge badge-success')
+
+        //set JWT token to local
+        localStorage.setItem("token", token);
+ 
+        //set token to axios common header
+        setAuthToken(token);
+ 
+        //redirect user to home page
+        window.location.href = '/employees/manage-employees'
+      }
+
+      else if (res.status === false && res.code === 422) {
+
+        if (res.errors.first_name) {
+          setMessage(res.errors.first_name[0])
         }
-      })
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
+        else if (res.errors.last_name) {
+          setMessage(res.errors.last_name[0])
+        }
+      
+        else if (res.errors.email) {
+          setMessage(res.errors.email[0])
+        }
+        else if (res.errors.password) {
+          setMessage(res.errors.password[0])
+        }
+  
+        else if (res.errors.token) {
+          setMessage(res.errors.token[0])
+        }
+        else if (res.errors.type) {
+          setMessage(res.errors.type[0])
+        }
+
+        setErrorClass("text-center d-flex justify-content-center badge badge-danger")
+      }
+
+      else if (res.status === false && res.code === 423) {
+        setMessage(res.message)
+        setErrorClass("text-center d-flex justify-content-center badge badge-danger")
+      }
+
+      else{
+        setMessage("An Error Occured")
+        setErrorClass("text-center d-flex justify-content-center badge badge-danger")
+      }
+    })
+
+    .catch(function (error) {
+      console.log(error);
+      setMessage("An Error Occured")
+      setErrorClass("text-center d-flex justify-content-center badge badge-danger")
+    });
+    
 
     
   }
 
-
-  render() {
     return (
       <div>
         <div className="d-flex align-items-center auth px-0">
@@ -119,21 +126,21 @@ export class RegisterCustom extends Component {
                 </div>
 
                 <h4>Sign Up</h4>
-                <form className="pt-3" onSubmit = { this.handleSubmit } method='post'>
-                  {/* <span className='message'>{this.handleMessage}</span> */}
+                <form className="pt-3" onSubmit = { handleSignUp } method='post'>
+                <div className={ errorClass }>{ message }</div>
                   <div className="row">
                     <div className="form-group col-md-6">
-                      <input type="text" className="form-control form-control-lg" id="exampleInputFirstName" name='first_name' placeholder="Enter First Name" onChange={this.handleFirstName} />
+                      <input type="text" className="form-control form-control-lg" id="exampleInputFirstName" name='first_name' placeholder="Enter First Name" onChange={ e => setFirstName(e.target.value) } />
                     </div>
                     <div className="form-group col-md-6">
-                      <input type="text" className="form-control form-control-lg" id="exampleInputLastName" name='last_name' placeholder="Enter Last Name" onChange={this.handleLastName} />
+                      <input type="text" className="form-control form-control-lg" id="exampleInputLastName" name='last_name' placeholder="Enter Last Name" onChange={ e => setLastName(e.target.value) } />
                     </div>
                   </div>    
                   
                  
                   <Form.Group>
                     <div className="input-group">
-                      <Form.Control type="email" onChange={this.handleEmail} id="exampleInputEmail1" placeholder='Enter Custom Email' className="form-control" aria-label="Enter Email" />
+                      <Form.Control type="email" onChange={ e => setEmail(e.target.value) } id="exampleInputEmail1" placeholder='Enter Custom Email' className="form-control" aria-label="Enter Email" />
                       <div className="input-group-append">
                         <span className="input-group-text text-dark">@digitalswitch.com</span>
                       </div>
@@ -141,15 +148,13 @@ export class RegisterCustom extends Component {
                   </Form.Group>
                   
                   <div className="form-group">
-                    <input type="password" className="form-control form-control-lg" id="exampleInputPassword" name='password' placeholder="Password" onChange={this.handlePassword} />
+                    <input type="password" className="form-control form-control-lg" id="exampleInputPassword" name='password' placeholder="Password" onChange={ e => setPassword(e.target.value) } />
                   </div>
                   <div className="form-group">
-                    <input type="password" className="form-control form-control-lg" id="exampleInputConfirmPassword" name='confirm_password' placeholder="Confirm Password" />
+                    <input type="password" className="form-control form-control-lg" id="exampleInputConfirmPassword" name='confirm_password' placeholder="Confirm Password" onChange={ e => setConfirmPassword(e.target.value) } />
                   </div>
 
-                  <div className="form-group">
-                    <input type="hidden" className="form-control form-control-lg" id="exampleInputType" value="0" name='type' />
-                  </div>
+              
 
                   <div className="mb-4">
                     <div className="form-check">
@@ -161,7 +166,7 @@ export class RegisterCustom extends Component {
                     </div>
                   </div>
                   <div className="mt-3">
-                    <button className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="">SIGN UP</button>
+                    <button onClick={ handleSignUp } className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" to="">SIGN UP</button>
                   </div>
                   <div className="text-center mt-4 font-weight-light" >
                     Already have an account? <Link to="/auth/login" className="text-primary">Login</Link>
@@ -174,6 +179,5 @@ export class RegisterCustom extends Component {
       </div>
     )
   }
-}
 
 export default RegisterCustom

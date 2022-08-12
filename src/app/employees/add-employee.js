@@ -87,7 +87,7 @@ function AddEmployee(){
     axios({
       method: 'post',
       data: newEmployee,
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/create-employee`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/create-employee`,
       headers: {
           'authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

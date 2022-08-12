@@ -3,14 +3,21 @@ import { Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 
-class Navbar extends Component {
-  toggleOffcanvas() {
+function Navbar() {
+  let toggleOffcanvas = () => {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');
   }
-  toggleRightSidebar() {
+  let toggleRightSidebar = () => {
     document.querySelector('.right-sidebar').classList.toggle('open');
   }
-  render () {
+
+  let handleLogOut = (e) => {
+    e.preventDefault()
+    localStorage.removeItem("authToken");
+    window.location.href = '/login'
+
+  }
+
     return (
       <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
@@ -95,7 +102,7 @@ class Navbar extends Component {
                     <i className="mdi mdi-cached mr-2 text-success"></i>
                     <Trans>Activity Log</Trans>
                   </Dropdown.Item>
-                  <Dropdown.Item href="!#" onClick={evt =>evt.preventDefault()}>
+                  <Dropdown.Item onClick={e => handleLogOut(e) }>
                     <i className="mdi mdi-logout mr-2 text-primary"></i>
                     <Trans>Signout</Trans>
                   </Dropdown.Item>
@@ -105,13 +112,13 @@ class Navbar extends Component {
             
            
           </ul>
-          <button className="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" onClick={this.toggleOffcanvas}>
+          <button className="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" onClick={toggleOffcanvas}>
             <span className="mdi mdi-menu"></span>
           </button>
         </div>
       </nav>
     );
   }
-}
+
 
 export default Navbar;

@@ -14,7 +14,7 @@ function VerificationPending (){
 
     axios({
       method: 'post',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/resend-verification-link`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/resend-verification-link`,
       headers: {
         'authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'

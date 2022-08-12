@@ -28,7 +28,7 @@ function ResetPassword() {
 
     axios({
       method: 'post',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/reset-password?token=${token}`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/reset-password?token=${token}`,
       data: passwordData,
       headers: {
         'Content-Type': 'application/json',

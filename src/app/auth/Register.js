@@ -89,7 +89,7 @@ export class Register extends Component {
     else{
       axios({
         method: 'post',
-        url: `http://${process.env.REACT_APP_SERVER_URL}/api/register`,
+        url: `${process.env.REACT_APP_SERVER_URL}/api/register`,
         data: user,
         headers: {
           'Content-Type': 'application/json',

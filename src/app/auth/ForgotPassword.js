@@ -18,7 +18,7 @@ function ForgotPassword () {
     
     axios({
       method: 'post',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/forget-password`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/forget-password`,
       data: mail,
       headers: {
         'Content-Type': 'application/json',

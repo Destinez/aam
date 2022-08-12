@@ -53,7 +53,7 @@ function ManageEmployees(){
 
         axios({
             method: 'get',
-            url: `http://${process.env.REACT_APP_SERVER_URL}/api/employees`,
+            url: `${process.env.REACT_APP_SERVER_URL}/api/employees`,
             headers: {
                 'authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ function ManageEmployees(){
 
         axios({
             method: 'post',
-            url: `http://${process.env.REACT_APP_SERVER_URL}/api/assign-role`,
+            url: `${process.env.REACT_APP_SERVER_URL}/api/assign-role`,
             data: data,
             headers: {
                 'authorization': `Bearer ${token}`,

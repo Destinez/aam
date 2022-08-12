@@ -51,7 +51,7 @@ function InvitationLink(){
 
     axios({
       method: 'post',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/generate-invitation-link`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/generate-invitation-link`,
       data: data,
       headers: {
           'authorization': `Bearer ${token}`,

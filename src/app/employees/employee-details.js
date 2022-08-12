@@ -25,7 +25,7 @@ function EmployeeDetails(){
     
     axios({
       method: 'get',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/employee-details/${employeeId}`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/employee-details/${employeeId}`,
       headers: {
           'authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

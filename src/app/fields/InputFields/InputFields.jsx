@@ -12,6 +12,12 @@ export function Text(){
                     <Form.Control type="text" className="form-control" placeholder="Default Value" aria-label="DefaultValue" aria-describedby="basic-addon1" onChange={e => setDefaultValue(e.target.value)} />
                 </div>
             </Form.Group>
+            <Form.Group>
+                <label htmlFor="exampleFormControlSelect2">Read Only</label>
+                <div className="input-group">
+                    <input type="checkbox" onChange={e => setReadOnly(e.target.value)} />
+                </div>
+            </Form.Group>
         </div>
    )   
 }
@@ -26,6 +32,12 @@ export function TextField(){
                     <textarea type="text" className="form-control" placeholder="Default Value" aria-label="DefaultValue" aria-describedby="basic-addon1" onChange={e => setDefaultValue(e.target.value)} ></textarea>
                 </div>
             </Form.Group>
+            <Form.Group>
+                <label htmlFor="exampleFormControlSelect2">Read Only</label>
+                <div className="input-group">
+                    <input type="checkbox" onChange={e => setReadOnly(e.target.value)} />
+                </div>
+            </Form.Group>
         </div>
         
    )   
@@ -34,7 +46,12 @@ export function TextField(){
 export function Boolean(){       
     return (
         <div>
-            
+            <Form.Group>
+                <label htmlFor="exampleFormControlSelect2">Read Only</label>
+                <div className="input-group">
+                    <input type="checkbox" onChange={e => setReadOnly(e.target.value)} />
+                </div>
+            </Form.Group>
         </div>
         
    )   
@@ -49,11 +66,16 @@ export function Number(){
                 </div>
             </Form.Group>
             <Form.Group>
-                <label htmlFor="exampleFormControlSelect2">Read Only</label>
                 <div className="input-group">
                     <input type="radio" name="fieldTypeNumber" onChange={e => setReadOnly(e.target.value)} />No Restrictions
                     <input type="radio" name="fieldTypeNumber" onChange={e => setReadOnly(e.target.value)} />Only Positive Numbers
                     <input type="radio" name="fieldTypeNumber" onChange={e => setReadOnly(e.target.value)} />Only Negative Numbers
+                </div>
+            </Form.Group>
+            <Form.Group>
+                <label htmlFor="exampleFormControlSelect2">Read Only</label>
+                <div className="input-group">
+                    <input type="checkbox" onChange={e => setReadOnly(e.target.value)} />
                 </div>
             </Form.Group>
         </div>
@@ -77,6 +99,12 @@ export function Date(){
                         <option value="mm/dd/yyyy">mm/dd/yyyy</option>
                         <option value="yyyy/mm/dd">yyyy/mm/dd</option>
                     </select>
+                </div>
+            </Form.Group>
+            <Form.Group>
+                <label htmlFor="exampleFormControlSelect2">Read Only</label>
+                <div className="input-group">
+                    <input type="checkbox" onChange={e => setReadOnly(e.target.value)} />
                 </div>
             </Form.Group>
         </div>

@@ -9,10 +9,10 @@ const axios = require('axios').default;
 
 function Login(){
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [errorClass, setErrorClass] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
+    const [errorClass, setErrorClass] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ function Login(){
     
     axios({
       method: 'post',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/login`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/login`,
       data: user,
       headers: {
         'Content-Type': 'application/json',

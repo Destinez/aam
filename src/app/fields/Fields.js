@@ -7,10 +7,7 @@ import setAuthToken from '../validation/authAuthToken'
 import { Text, Boolean, RadioBox, RadioGroup, Date, Number, CheckBoxGroup, File, TextField } from './InputFields/InputFields'
 const axios = require('axios').default;
 
-
-
 function Fields(){
-
     const [fieldName, setFieldName] = useState("")
     const [fieldType, setFieldType] = useState("")
     const [defaultValue, setDefaultValue] = useState("")
@@ -31,48 +28,13 @@ function Fields(){
         
     }, []);
 
-
     let handleFieldType = (e) => {
       setFieldType(e.target.value)
 
-      const { name, value } = e.target;
-      console.log(name, value)
-      
-
-      if(value == "text"){
-
-      }
-      else  if(value == "boolean"){
-
-      }
-      
-      else  if(value == "number"){
-
-      }
-      
-      else  if(value == "date"){
-
-      }
-      
-      else  if(value == "textfield"){
-
-      }
-      else  if(value == "radio_group"){
-
-      }
-      else  if(value == "check_box_group"){
-
-      }
-      else  if(value == "radio_box"){
-
-      }
-      else  if(value == "file"){
-
-      }
+      const { name, value } = e.target;      
       
     }
-
-    
+  
     let handleView = (id, e) => {
         e.preventDefault()
         window.location.href = `/fields/field-details/${id}`
@@ -150,8 +112,6 @@ function Fields(){
                             </tr>
                         </tbody>
                     </table>
-                    <Text />
-                    <TextField />
                     </div>
 {/* 
  <MUIDataTable
@@ -232,12 +192,7 @@ function Fields(){
                   { fieldType === "file" && <File /> }
                   { fieldType === "check_box_group" && <CheckBoxGroup /> }
 
-                  <Form.Group>
-                    <label htmlFor="exampleFormControlSelect2">Read Only</label>
-                    <div className="input-group">
-                      <input type="checkbox" onChange={e => setReadOnly(e.target.value)} />
-                    </div>
-                  </Form.Group>
+                  
                 </Modal.Body>
 
                 <Modal.Footer>

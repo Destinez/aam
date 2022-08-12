@@ -35,7 +35,7 @@ function UpdateEmployee(){
   let fetchEmployeeDetails = (token) => {
     axios({
       method: 'get',
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/employee-details/${id}`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/employee-details/${id}`,
       headers: {
           'authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ function UpdateEmployee(){
     axios({
       method: 'post',
       data: employee,
-      url: `http://${process.env.REACT_APP_SERVER_URL}/api/update-employee`,
+      url: `${process.env.REACT_APP_SERVER_URL}/api/update-employee`,
       headers: {
           'authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

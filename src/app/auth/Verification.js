@@ -21,7 +21,7 @@ function Verification () {
 
       axios({
         method: 'post',
-        url: `http://${process.env.REACT_APP_SERVER_URL}/api/verification?token=${token_temp}`,
+        url: `${process.env.REACT_APP_SERVER_URL}/api/verification?token=${token_temp}`,
         data: token,
         headers: {
           'Content-Type': 'application/json',
